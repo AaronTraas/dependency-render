@@ -1,20 +1,67 @@
 import copy
+import csv
 import json
+import graphviz
 
-input_data = {
-    "sets-api-v2": { "name": "Sets API V2", "slo": 0.99, "dependencies": ["experiments-api", "materials", "line-advancements" ] },
-    "sets-api-v3": { "name": "Sets API V3", "slo": 0.99, "dependencies": ["experiments-api", "materials", "line-advancements" ] },
-    "harvest-analytics": { "name": "Harvest Analytics Orchestrator", "slo": 0.99, "dependencies": ["sets-api-v2", "qanda-api", "job-inputs", "l360-geoserver", "capacity-request", "experiments-api", "capacity-request", "plans-api"] }
-}
+input_data = {}
+with open('dependencies.csv') as csvfile:
+    csvreader = csv.reader(csvfile)
+    next(csvreader)
+    for row in csvreader:
+        deps = [] 
+        if row[3]:
+            deps = row[3].split(',')
+        slo = None
+        if (row[2]):
+            slo = float(row[2])
+        input_data[row[0]] = {"name": row[1], "slo": slo, "dependencies": deps}
+
+#print(json.dumps(input_data, indent=4))
 
 applications = copy.deepcopy(input_data)
 
-uml_out = '@startuml\n'
+dot = graphviz.Digraph(comment='Dependencies', format='png', 
+    node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
+    edge_attr={'color': 'darkgrey'})
+
+for app_id, app in applications.items():
+    for dep_id in app.get('dependencies'):
+        if dep_id not in applications.keys():
+            dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
+
 for app_id, app in applications.items():
     app_name = app.get('name')
-    uml_out += (f'\n[{app_name}] as [{app_id}]\n')
-    for dep_id in app.get('dependencies'):
-        uml_out += (f'[{dep_id}] -> [{app_id}]\n')
-uml_out += ('\n@enduml\n')
+    app_slo = app.get('slo')
+    slo_label = ''
+    if app_slo:
+        app_slo = float(app_slo)*100
+        slo_label = f'\n{app_slo}%'
+    
+    if app.get('dependencies'):
+        nodecolor   = 'white'
+        textcolor   = 'black'
+        bordercolor = 'black'
+    else:
+        nodecolor   = None
+        textcolor   = None
+        bordercolor = None
 
-print(uml_out)
+    dot.node(app_id, f'{app_name}{slo_label}', color=bordercolor, fillcolor=nodecolor, fontcolor=textcolor)
+
+    for dep_id in app.get('dependencies'):
+        line_color='darkgrey'
+        if dep_id in applications.keys():
+            dep_slo = applications.get(dep_id).get('slo')
+            if dep_slo:
+                dep_slo = float(dep_slo)*100
+
+            if (not app_slo) or (not dep_slo):
+                line_color = None
+            elif app_slo <= dep_slo:
+                line_color='green'
+            else:
+                line_color='red'
+        dot.edge(app_id, dep_id, color=line_color)
+
+dot.unflatten(stagger=3)
+dot.render('dependencies.gv').replace('\\', '/')
