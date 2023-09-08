@@ -5,18 +5,17 @@ import csv
 import graphviz
 import os
 
-def main():
-    # parse command-line args
-    parser = argparse.ArgumentParser(description='Dependency graph generator')
-    parser.add_argument('input_csv',
-        help='The CSV to parse')
-    parser.add_argument('--output-type', choices=['pdf','png','svg'], default='pdf',
-        help='Output file type for the graph to render.')
-    args = parser.parse_args()
-    input_csv_file = args.input_csv
-    output_type = args.output_type
-    output_filename = '.'.join(os.path.splitext(input_csv_file)[:-1 or 0]) + '.gv'
 
+class ApplicationNode:
+    def __init__(self, name, group, vendor, slo, dependencies):
+        self.name = name
+        self.group = group
+        self.vendor = vendor
+        self.slo = slo
+        self.dependencies = dependencies
+
+
+class Config:
     # columns of CSV
     COL_APPID   = 0
     COL_APPNAME = 1
@@ -25,56 +24,71 @@ def main():
     COL_SLO     = 4
     COL_DEPS    = 5
 
+    def __init__(self, input_csv_path, output_type):
+        self.input_csv_path = input_csv_path
+        self.output_type = output_type
+        self.output_filename = '.'.join(os.path.splitext(input_csv_path)[:-1 or 0]) + '.gv'
+
+
+def cli_args_to_config():
+    # parse command-line args
+    parser = argparse.ArgumentParser(description='Dependency graph generator')
+    parser.add_argument('input_csv',
+        help='The CSV to parse')
+    parser.add_argument('--output-type', choices=['pdf','png','svg'], default='pdf',
+        help='Output file type for the graph to render.')
+    args = parser.parse_args()
+
+    return Config(args.input_csv, args.output_type)
+
+
+def ingest_applications_from_csv(config):
     # parse CSV file; ignores first row.
     applications = {}
-    with open(input_csv_file) as csvfile:
+    with open(config.input_csv_path) as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader) # Skip header row
         for row in csvreader:
             deps = []
-            if row[COL_DEPS]:
-                deps = row[COL_DEPS].split(',')
+            if row[config.COL_DEPS]:
+                deps = row[config.COL_DEPS].split(',')
             slo = None
-            if (row[COL_SLO]):
-                slo = float(row[COL_SLO])
+            if (row[config.COL_SLO]):
+                slo = float(row[config.COL_SLO])
 
-            applications[row[COL_APPID]] = {
-                'name': row[COL_APPNAME],
-                'group': row[COL_GROUP],
-                'vendor': row[COL_VENDOR],
-                'slo': slo,
-                'dependencies': deps
-            }
+            applications[row[config.COL_APPID]] = ApplicationNode(
+                row[config.COL_APPNAME],
+                row[config.COL_GROUP],
+                row[config.COL_VENDOR],
+                slo,
+                deps
+            )
 
-    # render output
-    dot = dependency_set_to_graph( applications )
-    dot.format=output_type;
-    dot.render(output_filename)
+    return applications
 
 
-def dependency_set_to_graph( applications ):
+def dependency_set_to_graph(applications):
     '''
     Create graph
     '''
+
     dot = graphviz.Digraph(comment='Dependencies',
         graph_attr={'rankdir':'LR'},
         node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
         edge_attr={'color': 'darkgrey'})
-
+    
     # create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
     for app_id, app in applications.items():
-        for dep_id in app.get('dependencies'):
+        for dep_id in app.dependencies:
             if dep_id not in applications.keys():
                 dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
 
     # create node and connections for each defined applications
     for app_id, app in applications.items():
-        app_name = app.get('name')
-        app_slo = app.get('slo')
         slo_label = ''
-        if app_slo:
-            app_slo = float(app_slo)*100
-            slo_label = f'\navailability: {app_slo}%'
+        if app.slo:
+            app_slo = float(app.slo)*100
+            slo_label = f'\navailability: {app.slo}%'
             nodecolor   = 'white'
             textcolor   = 'black'
             bordercolor = 'black'
@@ -83,19 +97,19 @@ def dependency_set_to_graph( applications ):
             textcolor   = None
             bordercolor = None
 
-        vendor_label = app.get('vendor')
-        if app.get('vendor'):
-            vendor_label = f'\n({vendor_label})'
+        vendor_label = ''
+        if app.vendor:
+            vendor_label = f'\n({app.vendor})'
 
-        group_name = app.get('group')
+        group_name = app.group
 
-        dot.node(app_id, f'{app_name}{vendor_label}{slo_label}', cluster=group_name, group=group_name, color=bordercolor, fillcolor=nodecolor, fontcolor=textcolor)
+        dot.node(app_id, f'{app.name}{vendor_label}{slo_label}', group=group_name, color=bordercolor, fillcolor=nodecolor, fontcolor=textcolor)
 
         # create connections to dependencies
-        for dep_id in app.get('dependencies'):
+        for dep_id in app.dependencies:
             line_color='darkgrey'
             if dep_id in applications.keys():
-                dep_slo = applications.get(dep_id).get('slo')
+                dep_slo = applications.get(dep_id).slo
                 if dep_slo:
                     dep_slo = float(dep_slo)*100
 
@@ -109,5 +123,17 @@ def dependency_set_to_graph( applications ):
 
     return dot
 
+
+def render_output(config, dot):
+    dot.format=config.output_type;
+    dot.render(config.output_filename)
+
+
 if __name__ == '__main__':
-    main()
+    config = cli_args_to_config()
+
+    applications = ingest_applications_from_csv(config)
+
+    dot = dependency_set_to_graph(applications)
+
+    render_output(config, dot)
