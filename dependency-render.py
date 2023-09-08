@@ -1,6 +1,7 @@
 import argparse
 import csv
 import graphviz
+import os
 
 # parse command-line args
 parser = argparse.ArgumentParser(description='Dependency graph generator')
@@ -11,6 +12,7 @@ parser.add_argument('--output-type', choices=['pdf','png','svg'], default='pdf',
 args = parser.parse_args()
 input_csv_file = args.input_csv
 output_type = args.output_type
+output_filename = '.'.join(os.path.splitext(input_csv_file)[:-1 or 0]) + '.gv'
 
 # columns of CSV
 COL_APPID   = 0
@@ -98,4 +100,4 @@ for app_id, app in applications.items():
         dot.edge(app_id, dep_id, dir='back', constraint='true', color=line_color)
 
 # render output
-dot.render('dependencies.gv').replace('\\', '/')
+dot.render(output_filename)
