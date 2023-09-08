@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
+import os
+
 import argparse
 import csv
 import graphviz
-import os
 
 
 class ApplicationNode:
@@ -12,7 +13,7 @@ class ApplicationNode:
         self.group = group
         self.vendor = vendor
         self.slo = None if not slo else float(slo)
-        self.dependencies = [] if not dependencies else dependencies.split(',')
+        self.dependencies = set() if not dependencies else set(dependencies.split(','))
 
 
 class Config:
@@ -69,12 +70,13 @@ def dependency_set_to_graph(applications):
         graph_attr={'rankdir':'LR'},
         node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
         edge_attr={'color': 'darkgrey'})
-    
+
     # create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
-    for app_id, app in applications.items():
-        for dep_id in app.dependencies:
-            if dep_id not in applications.keys():
-                dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
+    all_deps = set.union(*[ app.dependencies for app in applications.values() ])
+    known_apps = set(applications.keys())
+    # undefined_deps = all_deps - known_apps
+    for dep_id in all_deps.difference(known_apps):
+        dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
 
     # create node and connections for each defined applications
     for app_id, app in applications.items():
@@ -101,7 +103,7 @@ def dependency_set_to_graph(applications):
         # create connections to dependencies
         for dep_id in app.dependencies:
             line_color='darkgrey'
-            if dep_id in applications.keys():
+            if dep_id in known_apps:
                 dep_slo = applications.get(dep_id).slo
                 if dep_slo:
                     dep_slo = float(dep_slo)*100
@@ -118,15 +120,15 @@ def dependency_set_to_graph(applications):
 
 
 def render_output(config, dot):
-    dot.format=config.output_type;
+    dot.format=config.output_type
     dot.render(config.output_filename)
 
 
 if __name__ == '__main__':
-    config = cli_args_to_config()
+    g_config = cli_args_to_config()
 
-    applications = ingest_applications_from_csv(config)
+    g_applications = ingest_applications_from_csv(g_config)
 
-    dot = dependency_set_to_graph(applications)
+    g_dot = dependency_set_to_graph(g_applications)
 
-    render_output(config, dot)
+    render_output(g_config, g_dot)
