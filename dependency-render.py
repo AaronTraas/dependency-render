@@ -43,7 +43,9 @@ def cli_args_to_config():
 
 
 def ingest_applications_from_csv(config):
-    # parse CSV file; ignores first row.
+    '''
+    parse CSV file; ignores first row.
+    '''
     applications = {}
     with open(config.input_csv_path) as csvfile:
         csvreader = csv.reader(csvfile)
