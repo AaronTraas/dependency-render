@@ -32,7 +32,9 @@ class Config:
 
 
 def cli_args_to_config():
-    # parse command-line args
+    '''
+    parse command-line args
+    '''
     parser = argparse.ArgumentParser(description='Dependency graph generator')
     parser.add_argument('input_csv',
         help='The CSV to parse')
@@ -48,7 +50,7 @@ def ingest_applications_from_csv(config):
     parse CSV file; ignores first row.
     '''
     applications = {}
-    with open(config.input_csv_path) as csvfile:
+    with open(config.input_csv_path, "rt", encoding="utf-8") as csvfile:
         csvreader = csv.reader(csvfile)
         next(csvreader) # Skip header row
         for row in csvreader:
@@ -78,7 +80,8 @@ def dependency_set_to_graph(applications):
     known_apps = set(applications.keys())
     # undefined_deps = all_deps - known_apps
     for dep_id in all_deps.difference(known_apps):
-        dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
+        dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee',
+                 color='#ff9999', style='dashed,filled')
 
     # create node and connections for each defined applications
     for app_id, app in applications.items():
@@ -100,7 +103,9 @@ def dependency_set_to_graph(applications):
 
         group_name = app.group
 
-        dot.node(app_id, f'{app.name}{vendor_label}{slo_label}', group=group_name, color=bordercolor, fillcolor=nodecolor, fontcolor=textcolor)
+        dot.node(app_id, f'{app.name}{vendor_label}{slo_label}',
+                 group=group_name, color=bordercolor,
+                 fillcolor=nodecolor, fontcolor=textcolor)
 
         # create connections to dependencies
         for dep_id in app.dependencies:
