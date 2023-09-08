@@ -10,15 +10,15 @@ You need to install the [`graphviz` package](https://pypi.org/project/graphviz/)
 pip install graphviz
 ```
 
-usage: dependency-render.py [-h] [--output-type {pdf,png,svg}] input_csv
+usage: `dependency-render.py [-h] [--output-type {pdf,png,svg}] input_csv`
 
 Dependency graph generator
 
 positional arguments:
-- input_csv             The CSV to parse
+- `input_csv`: The CSV to parse
 
 optional arguments:
-- --output-type: Output file type for the graph to render. Valid types are `pdf`, `png`, and `svg`. Default is `pdf`.
+- `--output-type`: Output file type for the graph to render. Valid types are `pdf`, `png`, and `svg`. Default is `pdf`.
 
 Example:
 ```bash
