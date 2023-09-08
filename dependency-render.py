@@ -11,8 +11,8 @@ class ApplicationNode:
         self.name = name
         self.group = group
         self.vendor = vendor
-        self.slo = slo
-        self.dependencies = dependencies
+        self.slo = None if not slo else float(slo)
+        self.dependencies = [] if not dependencies else dependencies.split(',')
 
 
 class Config:
@@ -49,19 +49,12 @@ def ingest_applications_from_csv(config):
         csvreader = csv.reader(csvfile)
         next(csvreader) # Skip header row
         for row in csvreader:
-            deps = []
-            if row[config.COL_DEPS]:
-                deps = row[config.COL_DEPS].split(',')
-            slo = None
-            if (row[config.COL_SLO]):
-                slo = float(row[config.COL_SLO])
-
             applications[row[config.COL_APPID]] = ApplicationNode(
                 row[config.COL_APPNAME],
                 row[config.COL_GROUP],
                 row[config.COL_VENDOR],
-                slo,
-                deps
+                row[config.COL_SLO],
+                row[config.COL_DEPS]
             )
 
     return applications
