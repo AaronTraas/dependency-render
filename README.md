@@ -4,13 +4,13 @@ This renders a graph of dependencies. It takes as input a CSV called `dependenci
 
 ## usage
 
-You need to install the [`graphviz` package](https://pypi.org/project/graphviz/) in python. To do this, do:
+You need to install the [`graphviz`](https://pypi.org/project/graphviz/) and [`argparse`](https://pypi.org/project/argparse/) packages in python. To do this, do:
 
 ```bash
-pip install graphviz
+pip install graphviz argparse
 ```
 
-usage: `dependency-render.py [-h] [--output-type {pdf,png,svg}] input_csv`
+usage: `dependency-render.py [--output-type {pdf,png,svg}] input_csv`
 
 Dependency graph generator
 
