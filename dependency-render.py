@@ -1,7 +1,18 @@
+import argparse
 import csv
 import graphviz
 
-# columns of spreadsheet
+# parse command-line args
+parser = argparse.ArgumentParser(description='Dependency graph generator')
+parser.add_argument('input_csv', 
+    help='The CSV to parse')
+parser.add_argument('--output-type', choices=['pdf','png','svg'], default='pdf', 
+    help='Output file type for the graph to render.')
+args = parser.parse_args()
+input_csv_file = args.input_csv
+output_type = args.output_type
+
+# columns of CSV
 COL_APPID   = 0
 COL_APPNAME = 1
 COL_GROUP   = 2
@@ -9,8 +20,9 @@ COL_VENDOR  = 3
 COL_SLO     = 4
 COL_DEPS    = 5
 
+# parse CSV file; ignores first row.
 applications = {}
-with open('dependencies.csv') as csvfile:
+with open(input_csv_file) as csvfile:
     csvreader = csv.reader(csvfile)
     next(csvreader)
     for row in csvreader:
@@ -29,17 +41,20 @@ with open('dependencies.csv') as csvfile:
             'dependencies': deps
         }
 
+# greate graph
 dot = graphviz.Digraph(comment='Dependencies', 
-    format='pdf', 
+    format=output_type, 
     graph_attr={'rankdir':'LR'},
     node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
     edge_attr={'color': 'darkgrey'})
 
+# create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
 for app_id, app in applications.items():
     for dep_id in app.get('dependencies'):
         if dep_id not in applications.keys():
             dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
 
+# create node and connections for each defined applications
 for app_id, app in applications.items():
     app_name = app.get('name')
     app_slo = app.get('slo')
@@ -66,6 +81,7 @@ for app_id, app in applications.items():
 
     dot.node(app_id, f'{app_name}{vendor_label}{slo_label}', cluster=group_name, group=group_name, color=bordercolor, fillcolor=nodecolor, fontcolor=textcolor)
 
+    # create connections to dependencies
     for dep_id in app.get('dependencies'):
         line_color='darkgrey'
         if dep_id in applications.keys():
@@ -81,5 +97,5 @@ for app_id, app in applications.items():
                 line_color='red'
         dot.edge(app_id, dep_id, dir='back', constraint='true', color=line_color)
 
-dot.unflatten(stagger=3)
+# render output
 dot.render('dependencies.gv').replace('\\', '/')

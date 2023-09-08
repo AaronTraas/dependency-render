@@ -7,7 +7,7 @@ This renders a graph of dependencies. It takes as input a CSV called `dependenci
 You need to install the [`graphviz` package](https://pypi.org/project/graphviz/) in python. To do this, do:
 
 ```bash
-$ pip install graphviz
+pip install graphviz
 ```
 
 ## CSV format
