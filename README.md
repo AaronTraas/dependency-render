@@ -29,7 +29,15 @@ python3 dependency-render.py dependencies.csv --output-type=svg
 
 It should be formatted with the following columns:
 
-Application ID  Application Name    group   vendor  Availability SLO    Dependencies
+1. Application ID
+2. Application Name
+3. group
+4. vendor
+5. Availability SLO
+6. Dependencies
+
+
+### Example
 
 | Application ID | Application Name | group | vendor | Availability SLO | Dependencies              |
 | -------------- | ---------------- | ----- | ------ | ---------------- | ------------------------- |
