@@ -10,7 +10,7 @@ import graphviz
 class ApplicationNode:
     def __init__(self, name, group, vendor, slo, dependencies):
         self.name = name
-        self.group = group
+        self.group = None if not group else group
         self.vendor = vendor
         self.slo = None if not slo else float(slo)
         self.dependencies = set() if not dependencies else set(dependencies.split(','))
@@ -71,57 +71,51 @@ def dependency_set_to_graph(applications):
     '''
 
     dot = graphviz.Digraph(comment='Dependencies',
-        graph_attr={'rankdir':'LR'},
+        graph_attr={'rankdir':'RL'},
         node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
         edge_attr={'color': 'darkgrey'})
+
+    dot_endl = '<BR />'
 
     # create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
     all_deps = set.union(*[ app.dependencies for app in applications.values() ])
     known_apps = set(applications.keys())
     # undefined_deps = all_deps - known_apps
     for dep_id in all_deps.difference(known_apps):
-        dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee',
-                 color='#ff9999', style='dashed,filled')
+        dot.node(dep_id, f'<{dep_id}{dot_endl}(undefined)>', fillcolor='#eeeeee',
+                 color='#ff9999', fontcolor=None, style='dashed,filled')
 
     # create node and connections for each defined applications
     for app_id, app in applications.items():
-        slo_label = ''
         if app.slo:
-            app_slo = float(app.slo)*100
-            slo_label = f'\navailability: {app.slo}%'
+            slo_label   = f'{dot_endl}availability: {app.slo*100}%'
             nodecolor   = 'white'
             textcolor   = 'black'
             bordercolor = 'black'
         else:
+            slo_label   = '' #f'{dot_endl}availability: N/A'
             nodecolor   = None
             textcolor   = None
             bordercolor = None
 
-        vendor_label = ''
-        if app.vendor:
-            vendor_label = f'\n({app.vendor})'
+        vendor_label = '' if not app.vendor else f'{dot_endl}({app.vendor})'
 
         group_name = app.group
 
-        dot.node(app_id, f'{app.name}{vendor_label}{slo_label}',
+        dot.node(app_id, f'<{app.name}{vendor_label}{slo_label}>',
                  group=group_name, color=bordercolor,
                  fillcolor=nodecolor, fontcolor=textcolor)
 
         # create connections to dependencies
         for dep_id in app.dependencies:
-            line_color='darkgrey'
+            line_color=None
             if dep_id in known_apps:
                 dep_slo = applications.get(dep_id).slo
-                if dep_slo:
-                    dep_slo = float(dep_slo)*100
 
-                if (not app_slo) or (not dep_slo):
-                    line_color = None
-                elif app_slo <= dep_slo:
-                    line_color='green'
-                else:
-                    line_color='red'
-            dot.edge(app_id, dep_id, dir='back', constraint='true', color=line_color)
+                if (app.slo is not None) and (dep_slo is not None):
+                    line_color='green' if app.slo <= dep_slo else 'red'
+
+            dot.edge(dep_id, app_id, color=line_color)
 
     return dot
 
