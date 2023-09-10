@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
+import os
+
 import argparse
 import csv
 import graphviz
-import os
 
 
 class ApplicationNode:
@@ -72,16 +73,10 @@ def dependency_set_to_graph(applications):
         graph_attr={'rankdir':'RL'},
         node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
         edge_attr={'color': 'darkgrey'})
-    
+
     dot_endl = '<BR />'
 
     # create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
-    for app in applications.values():
-        for dep_id in app.dependencies:
-            if dep_id not in applications.keys():
-                dot.node(dep_id, f'{dep_id}\n(undefined)', fillcolor='#eeeeee', color='#ff9999', style='dashed,filled')
-
-    # create node and connections for each defined applications
     all_deps = set.union(*[ app.dependencies for app in applications.values() ])
     known_apps = set(applications.keys())
     # undefined_deps = all_deps - known_apps
