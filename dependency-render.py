@@ -15,7 +15,6 @@ class ApplicationNode:
         self.slo = None if not slo else float(slo)
         self.dependencies = set() if not dependencies else set(dependencies.split(','))
 
-
 class Config:
     # columns of CSV
     COL_APPID   = 0
@@ -124,6 +123,7 @@ def render_output(config):
     dot = dependency_set_to_graph(ingest_applications_from_csv(config))
     dot.format=config.output_type
     dot.render(config.output_filename)
+
 
 if __name__ == '__main__':
     render_output(cli_args_to_config())
