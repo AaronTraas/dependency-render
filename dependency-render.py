@@ -33,7 +33,7 @@ class Config:
 
 def cli_args_to_config():
     '''
-    parse command-line args
+    parse command-line args.
     '''
     parser = argparse.ArgumentParser(description='Dependency graph generator')
     parser.add_argument('input_csv',
@@ -120,16 +120,10 @@ def dependency_set_to_graph(applications):
     return dot
 
 
-def render_output(config, dot):
+def render_output(config):
+    dot = dependency_set_to_graph(ingest_applications_from_csv(config))
     dot.format=config.output_type
     dot.render(config.output_filename)
 
-
 if __name__ == '__main__':
-    g_config = cli_args_to_config()
-
-    g_applications = ingest_applications_from_csv(g_config)
-
-    g_dot = dependency_set_to_graph(g_applications)
-
-    render_output(g_config, g_dot)
+    render_output(cli_args_to_config())
