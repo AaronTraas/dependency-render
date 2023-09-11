@@ -13,7 +13,7 @@ class ApplicationNode:
         self.group = None if not group else group
         self.vendor = vendor
         self.slo = None if not slo else float(slo)
-        self.dependencies = set() if not dependencies else set(dependencies.split(','))
+        self.dependencies = set() if not dependencies else set([d.strip() for d in dependencies.split(',')])
 
 class Config:
     # columns of CSV
