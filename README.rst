@@ -59,17 +59,36 @@ It should be formatted with the following columns:
 Example
 --------------------------------------------------
 
-.. csv-table:: Table Title
-   :file: ./example.csv
+.. list-table:: Title
+   :widths: 25 25 50
    :header-rows: 1
 
-| Application ID | Application Name | group | vendor | Availability SLO | Dependencies              |
-| -------------- | ---------------- | ----- | ------ | ---------------- | ------------------------- |
-| foo            | Foo Application  |       |        | 0.99             | bar,baz,google-maps       |
-| bar            | Bar API          | api   |        | 0.999            | mongo,okta                |
+   * - Application ID
+     - Application Name
+     - group
+     - vendor
+     - Availability SLO
+     - Dependencies
+   * - foo
+     - Foo Application  
+     -
+     -
+     - 0.99
+     - bar,baz,google-maps
+   * - bar
+     - Bar API
+     - api
+     -
+     - 0.999
+     - mongo,okta
+
+
 | baz            | Baz API          | api   |        | 0.999            | mongo,okta                |
+
 | quux           | Quux API         | api   |        | 0.99             |                           |
+
 | google-maps    | Google Maps API  |       | Google |                  |                           |
+
 | okta           | Okta Core API    |       | Okta   |                  |                           |
 
 See [`example.csv`](./example.csv)
