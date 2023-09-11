@@ -27,7 +27,6 @@ Syntax
 
 Usage:
 .. code::
-
 dependency-render [-h] [--output-type {pdf,png,svg}] [--debug] [--version] input_csv
 
 positional arguments:
@@ -59,6 +58,10 @@ It should be formatted with the following columns:
 --------------------------------------------------
 Example
 --------------------------------------------------
+
+.. csv-table:: Table Title
+   :file: ./example.csv
+   :header-rows: 1
 
 | Application ID | Application Name | group | vendor | Availability SLO | Dependencies              |
 | -------------- | ---------------- | ----- | ------ | ---------------- | ------------------------- |
