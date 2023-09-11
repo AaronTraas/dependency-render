@@ -26,8 +26,10 @@ Syntax
 ==================================================
 
 Usage:
+
 .. code::
-dependency-render [-h] [--output-type {pdf,png,svg}] [--debug] [--version] input_csv
+
+  dependency-render [-h] [--output-type {pdf,png,svg}] [--debug] [--version] input_csv
 
 positional arguments:
   `input_csv`: The CSV to parse
@@ -38,9 +40,10 @@ optional arguments:
   --version            List the version of dependency-render.
 
 Example:
-```bash
-python3 dependency-render.py dependencies.csv --output-type=svg
-```
+.. code::
+
+  python3 dependency-render.py dependencies.csv --output-type=svg
+
 
 ==================================================
 CSV format
@@ -75,7 +78,7 @@ Example
 | okta           | Okta Core API    |       | Okta   |                  |                           |
 +----------------+------------------+-------+--------+------------------+---------------------------+
 
-See `example.csv` <./example.csv>`_.
+See `example.csv <./example.csv>`_.
 
 The above will render to:
 
