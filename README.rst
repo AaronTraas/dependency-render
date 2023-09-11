@@ -32,9 +32,14 @@ Usage:
   dependency-render [-h] [--output-type {pdf,png,svg}] [--debug] [--version] input_csv
 
 positional arguments:
-+--------------------+------------------+
-| `input_csv`        | The CSV to parse |
-+--------------------+------------------+
+
+=========  ================
+input_csv  The CSV to parse
+=========  ================
+
+---------  ----------------
+input_csv  The CSV to parse
+---------  ----------------
 
 optional arguments:
   -h, --help           show this help message and exit
