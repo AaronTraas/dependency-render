@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 
 import argparse
@@ -124,6 +122,3 @@ def render_output(config):
     dot.format=config.output_type
     dot.render(config.output_filename)
 
-
-if __name__ == '__main__':
-    render_output(cli_args_to_config())
