@@ -32,7 +32,9 @@ Usage:
   dependency-render [-h] [--output-type {pdf,png,svg}] [--debug] [--version] input_csv
 
 positional arguments:
-  `input_csv`          The CSV to parse
++--------------------+------------------+
+| `input_csv`        | The CSV to parse |
++--------------------+------------------+
 
 optional arguments:
   -h, --help           show this help message and exit
@@ -61,6 +63,18 @@ It should be formatted with the following columns:
 --------------------------------------------------
 Example
 --------------------------------------------------
+
+
+==============  ================  =====  ======  ================  =========================
+Application ID  Application Name  group  vendor  Availability SLO  Dependencies             
+==============  ================  =====  ======  ================  =========================
+foo             Foo Application                  0.99              bar,baz,google-maps      
+bar             Bar API           api            0.999             mongo,okta               
+baz             Baz API           api            0.999             mongo,okta               
+quux            Quux API          api            0.99                                       
+google-maps     Google Maps API          Google                                              
+okta            Okta Core API            Okta                                               
+==============  ================  =====  ======  ================  =========================
 
 +----------------+------------------+-------+--------+------------------+---------------------------+
 | Application ID | Application Name | group | vendor | Availability SLO | Dependencies              |
