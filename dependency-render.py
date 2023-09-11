@@ -9,9 +9,9 @@ import graphviz
 
 class ApplicationNode:
     def __init__(self, name, group, vendor, slo, dependencies):
-        self.name = name
-        self.group = None if not group else group
-        self.vendor = vendor
+        self.name = name.strip()
+        self.group = None if not group else group.strip()
+        self.vendor = None if not vendor else vendor.strip()
         self.slo = None if not slo else float(slo)
         self.dependencies = set() if not dependencies else set([d.strip() for d in dependencies.split(',')])
 
