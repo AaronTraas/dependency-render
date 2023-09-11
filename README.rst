@@ -82,8 +82,8 @@ See `example.csv <./example.csv>`_.
 
 The above will render to:
 
-![Example graph](./example.svg)
-
+.. image:: ./example.svg
+   :alt: Example graph
 
 ==================================================
 Development links
