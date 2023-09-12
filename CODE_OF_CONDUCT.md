@@ -1,8 +1,8 @@
-# Contributor Code of Conduct for crtools
+# Contributor Code of Conduct for dependency-render
 
 ## Standards
 
-The crtools team requests the following from all contributors:
+The dependency-render team requests the following from all contributors:
 
 - Write good code
 

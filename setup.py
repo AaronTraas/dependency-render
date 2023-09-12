@@ -12,20 +12,20 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 # single-sourcing the version
-with open(path.join(here, 'crtools/_version.py')) as f:
+with open(path.join(here, 'dep_render/_version.py')) as f:
     exec(f.read())
 
 setup(
-    name='crtools',
+    name='dependency-render',
 
-    # Version single-sourced from crtools/_version.py
+    # Version single-sourced from dep_render/_version.py
     version=__version__,
 
-    description='Python tools for creating a clan management dashboard for Clash Royale',
+    description='A command-line tool that renders a graph of dependencies. It takes as input a CSV called `dependencies.csv`, and uses Graphviz to generate a dependency map as an image.',
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/AaronTraas/Clash-Royale-Clan-Tools',
+    url='https://github.com/AaronTraas/dependency-render',
 
     # Author details
     author='Aaron Traas',
@@ -42,22 +42,20 @@ setup(
         'Programming Language :: Python :: 3',
     ],
 
-    keywords='ClashRoyale',
-
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=find_packages(exclude=['tests']),
 
     setup_requires=['babel'],
-    install_requires=['jinja2','configparser','pyroyale>=1.0.3', 'requests', 'discord-webhook', 'google-api-python-client'],
+    install_requires=['graphviz'],
 
     include_package_data=True,
 
     entry_points={
         'console_scripts': [
-            'crtools=crtools:main',
+            'dependency_render=main',
         ],
     },
     project_urls={  # Optional
-        'Bug Reports': 'https://github.com/AaronTraas/Clash-Royale-Clan-Tools/issues',
-        'Source': 'https://github.com/AaronTraas/Clash-Royale-Clan-Tools',
+        'Bug Reports': 'https://github.com/AaronTraas/dependency-render/issues',
+        'Source': 'https://github.com/AaronTraas/dependency-render',
     },
 )

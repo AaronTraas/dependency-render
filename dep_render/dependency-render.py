@@ -1,6 +1,5 @@
 import os
 
-import argparse
 import csv
 import graphviz
 
@@ -26,20 +25,6 @@ class Config:
         self.input_csv_path = input_csv_path
         self.output_type = output_type
         self.output_filename = '.'.join(os.path.splitext(input_csv_path)[:-1 or 0]) + '.gv'
-
-
-def cli_args_to_config():
-    '''
-    parse command-line args.
-    '''
-    parser = argparse.ArgumentParser(description='Dependency graph generator')
-    parser.add_argument('input_csv',
-        help='The CSV to parse')
-    parser.add_argument('--output-type', choices=['pdf','png','svg'], default='pdf',
-        help='Output file type for the graph to render.')
-    args = parser.parse_args()
-
-    return Config(args.input_csv, args.output_type)
 
 
 def ingest_applications_from_csv(config):

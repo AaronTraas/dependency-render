@@ -1,4 +1,4 @@
-# How to contribute to crtools
+# How to contribute to dependency-render
 
 ## Did you find a bug?
 
@@ -7,7 +7,7 @@
 - If you're unable to find an open issue addressing the problem, 
   [open a new one](https://github.com/AaronTraas/Clash-Royale-Clan-Tools/issues/new). 
   Be sure to include a **title and clear description**, as much relevant information 
-  as possible. Please include your ***config file*** and ***command line arguments***. 
+  as possible. Please include your ***command line arguments***. 
   Run with `--debug` and include the ***console output*** if applicable.
 
 ## Did you write a patch that fixes a bug?
@@ -18,7 +18,6 @@
 
 ## Do you intend to add a new feature or change an existing one
 
-- Suggest your change in the [community discord](https://discord.gg/K2UDCXU) and start writing code.
+- Start writing code.
 - When finished, submit a pull request
 
-Crtools is a volunteer effort. We encourage you to pitch in!
