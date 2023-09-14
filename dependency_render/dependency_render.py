@@ -1,17 +1,14 @@
-#!/usr/bin/env python3
-
 import os
 
-import argparse
 import csv
 import graphviz
 
 
 class ApplicationNode:
     def __init__(self, name, group, vendor, slo, dependencies):
-        self.name = name
-        self.group = None if not group else group
-        self.vendor = vendor
+        self.name = name.strip()
+        self.group = None if not group else group.strip()
+        self.vendor = None if not vendor else vendor.strip()
         self.slo = None if not slo else float(slo)
         self.dependencies = set() if not dependencies else set([d.strip() for d in dependencies.split(',')])
 
@@ -28,20 +25,6 @@ class Config:
         self.input_csv_path = input_csv_path
         self.output_type = output_type
         self.output_filename = '.'.join(os.path.splitext(input_csv_path)[:-1 or 0]) + '.gv'
-
-
-def cli_args_to_config():
-    '''
-    parse command-line args.
-    '''
-    parser = argparse.ArgumentParser(description='Dependency graph generator')
-    parser.add_argument('input_csv',
-        help='The CSV to parse')
-    parser.add_argument('--output-type', choices=['pdf','png','svg'], default='pdf',
-        help='Output file type for the graph to render.')
-    args = parser.parse_args()
-
-    return Config(args.input_csv, args.output_type)
 
 
 def ingest_applications_from_csv(config):
@@ -74,7 +57,7 @@ def dependency_set_to_graph(applications):
         node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
         edge_attr={'color': 'darkgrey'})
 
-    dot_endl = '<BR />'
+    dot_endl = '<br />'
 
     # create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
     all_deps = set.union(*[ app.dependencies for app in applications.values() ])
@@ -92,7 +75,7 @@ def dependency_set_to_graph(applications):
             textcolor   = 'black'
             bordercolor = 'black'
         else:
-            slo_label   = '' #f'{dot_endl}availability: N/A'
+            slo_label   = ''
             nodecolor   = None
             textcolor   = None
             bordercolor = None
@@ -124,6 +107,3 @@ def render_output(config):
     dot.format=config.output_type
     dot.render(config.output_filename)
 
-
-if __name__ == '__main__':
-    render_output(cli_args_to_config())
