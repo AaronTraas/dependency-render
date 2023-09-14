@@ -1,10 +1,9 @@
 from argparse import ArgumentParser
+import sys
 
 from ._version import __version__
-from .dep_render import render_output
-from .dep_render import Config
-
-logger = logging.getLogger(__name__)
+from .dependency_render import render_output
+from .dependency_render import Config
 
 def parse_args(argv):
     '''

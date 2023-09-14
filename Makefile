@@ -1,7 +1,7 @@
 # Define required macros here
 SHELL = /bin/sh
 
-SRCDIR = ./dep_render
+SRCDIR = ./dependency_render
 TESTDIR = ./tests
 
 clean:
@@ -28,7 +28,7 @@ coverage-html: coverage
 	coverage html
 
 sonar: coverage
-	sonar-scanner -Dsonar.projectVersion=`python -c "import sys; from dep_render import __version__; sys.stdout.write(__version__)"`
+	sonar-scanner -Dsonar.projectVersion=`python -c "import sys; from dependency_render import __version__; sys.stdout.write(__version__)"`
 
 dist: 
 	python3 setup.py sdist bdist_wheel
