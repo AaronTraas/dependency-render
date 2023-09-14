@@ -51,7 +51,7 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'dependency_render=main',
+            'dependency_render=dep_render::main',
         ],
     },
     project_urls={  # Optional

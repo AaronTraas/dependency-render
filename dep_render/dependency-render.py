@@ -57,7 +57,7 @@ def dependency_set_to_graph(applications):
         node_attr={'color': '#dddddd', 'style': 'filled', 'fontcolor':'#777777'},
         edge_attr={'color': 'darkgrey'})
 
-    dot_endl = '<BR />'
+    dot_endl = '<br />'
 
     # create nodes that only exist as dependencies, but aren't defined as rows in the CSV.
     all_deps = set.union(*[ app.dependencies for app in applications.values() ])
@@ -75,7 +75,7 @@ def dependency_set_to_graph(applications):
             textcolor   = 'black'
             bordercolor = 'black'
         else:
-            slo_label   = '' #f'{dot_endl}availability: N/A'
+            slo_label   = ''
             nodecolor   = None
             textcolor   = None
             bordercolor = None
