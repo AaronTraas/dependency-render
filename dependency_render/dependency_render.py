@@ -61,6 +61,7 @@ def ingest_applications_from_csv(config):
 
 def render_legend(legend):        
     legend.attr(cluster='true')
+    legend.attr(rankdir='TB')
     legend.attr(label='Legend')
     legend.attr(color='black')
     legend.attr(bgcolor='white')
@@ -69,7 +70,7 @@ def render_legend(legend):
         color='black',
         fillcolor='white',
         fontcolor='black')
-    legend.node('key3', label='Application with SLO', 
+    legend.node('key3', label='Undefined Application', 
         fillcolor='#eeeeee',
         color='#ff9999', 
         fontcolor=None, 
@@ -77,25 +78,12 @@ def render_legend(legend):
     with legend.subgraph(name='lines') as lines:
         lines.attr(cluster='false')
         lines.attr(shape='plaintext')
+        lines.attr(margin='0')
         lines.attr(rankdir='RL')
-        lines.node('table1', label='''<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
-                                      <tr><td align="right" port="i1">Dependency<br/>compatible SLO</td></tr>
-                                      <tr><td align="right" port="i2">Dependency<br/>incompatible SLO</td></tr>
-                                      <tr><td align="right" port="i3">Dependency<br/>unknown SLO</td></tr>
-                                      </table>>''',
-                   fillcolor='white',
-                   color='white',
-                   fontcolor='black')
-        lines.node('table2', label='''<<table border="0" cellpadding="2" cellspacing="0" cellborder="0">
-                                      <tr><td port="i1">&nbsp;<br/>&nbsp;</td></tr>
-                                      <tr><td port="i2">&nbsp;<br/>&nbsp;</td></tr>
-                                      <tr><td port="i3">&nbsp;<br/>&nbsp;</td></tr>
-                                      </table>>''',
-                    style='invis')
-        lines.edge('table1:i1:w', 'table2:i1:e', color='green')
-        lines.edge('table1:i2:w', 'table2:i2:e', color='red')
-        lines.edge('table1:i3:w', 'table2:i3:e')
-
+        lines.node_attr['style'] = 'invis'
+        lines.edge('a1_w', 'a1_e', color='green', label='Dependency w/ compatible SLO')
+        lines.edge('a2_w', 'a2_e', color='red', label='Dependency w/ incompatible SLO')
+        lines.edge('a3_w', 'a3_e', label='Dependency without SLO')
 
 
 def dependency_set_to_graph(applications, config):
