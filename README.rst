@@ -58,23 +58,24 @@ It should be formatted with the following columns:
 2. Application Name
 3. group
 4. vendor
-5. Availability SLO
-6. Dependencies
+5. Important node 
+6. Availability SLO
+7. Dependencies
 
 --------------------------------------------------
 Example CSV:
 --------------------------------------------------
 
-==============  ================  =====  ======  ================  =========================
-Application ID  Application Name  group  vendor  Availability SLO  Dependencies             
-==============  ================  =====  ======  ================  =========================
-foo             Foo Application                  0.99              bar,baz,google-maps      
-bar             Bar API           api            0.999             mongo,okta               
-baz             Baz API           api            0.999             mongo,okta               
-quux            Quux API          api            0.99                                       
+==============  ================  =====  ======  =========  ================  =========================
+Application ID  Application Name  group  vendor  important  Availability SLO  Dependencies             
+==============  ================  =====  ======  =========  ================  =========================
+foo             Foo Application                             0.99              bar,baz,google-maps      
+bar             Bar API           api            x          0.999             mongo,okta               
+baz             Baz API           api                       0.999             mongo,okta               
+quux            Quux API          api                       0.99                                       
 google-maps     Google Maps API          Google                                              
 okta            Okta Core API            Okta                                               
-==============  ================  =====  ======  ================  =========================
+==============  ================  =====  ======  =========  ================  =========================
 
 See `example.csv <./example.csv>`_.
 
