@@ -65,7 +65,7 @@ def render_legend(legend):
     legend.attr(label='Legend')
     legend.attr(color='black')
     legend.attr(bgcolor='white')
-    legend.node('key', label='Application without SLO')
+    legend.node('key1', label='Application without SLO')
     legend.node('key2', label='Application with SLO', 
         color='black',
         fillcolor='white',
